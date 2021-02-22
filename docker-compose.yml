@@ -1,0 +1,31 @@
+version: '3'
+services:
+
+    broker:
+        container_name: broker
+        build: docker
+        ports:
+            - 1883:1883
+        networks:
+            app_net:
+                ipv4_address: 172.30.0.2
+        volumes:
+            - ./dist:/tmp/cap
+    subscriber:
+        image: golang:1.15.8
+        volumes:
+            - .:/go
+        networks:
+            app_net:
+                ipv4_address: 172.30.0.3
+        environment:
+            - GOPATH=
+
+networks:
+  app_net:
+    name: app_net
+    driver: bridge
+    ipam:
+     driver: default
+     config:
+       - subnet: 172.30.0.0/24
